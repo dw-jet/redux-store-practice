@@ -44,7 +44,25 @@ function todos (state = [], action) {
   }
 }
 
-const store = createStore(todos)
+function goals (state = [], action) {
+  switch(action.type) {
+    case 'ADD_GOAL' :
+      return state.concat([action.goal]);
+    case 'REMOVE_GOAL' :
+      return state.filter((goal) => goal.id !== action.id);
+    default :
+      return state;
+  }
+}
+
+function app (state={}, action) {
+  return {
+    todos: todos(state.todos, action),
+    goals: goals(state.goals, action),
+  }
+}
+
+const store = createStore(app)
 
 store.subscribe(() => {
   console.log('The new state is: ', store.getState())
@@ -60,6 +78,15 @@ store.dispatch({
 })
 
 store.dispatch({
+  type: 'ADD_TODO',
+  todo: {
+    id: 1,
+    name: 'Walk',
+    complete: false
+  }
+})
+
+store.dispatch({
   type: 'TOGGLE_TODO',
   id: 0
 })
@@ -67,4 +94,12 @@ store.dispatch({
 store.dispatch({
   type: 'REMOVE_TODO',
   id: 0,
+})
+
+store.dispatch({
+  type: 'ADD_GOAL',
+  goal: {
+    id: 0,
+    name: "Front end web developer"
+  }
 })
