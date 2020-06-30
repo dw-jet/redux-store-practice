@@ -221,15 +221,36 @@
     }
 
     class Todos extends React.Component {
-        render() {
-          return(
-            <div>
-              TODOS
+      addItem = (e) => {
+        e.preventDefault()
+        // Using uncontrolled component ref to get access to input from render
+        const name = this.input.value
+        this.input.value = ''
 
-              <List />
-            </div>
-          )
-        }
+        this.props.store.dispatch(addTodoAction({
+          name,
+          complete: false,
+          id: generateId()
+        }))
+      }
+
+      render() {
+        return(
+        <div>
+          <h1>Todo List</h1>
+          <input 
+          type='text' 
+          placeholder='Add todo' 
+          // Refs provide a way to access DOM nodes or React elements created in the render method.
+          ref={(input) => {this.input = input}} 
+          />
+          
+          <button onClick={this.addItem}>Add Todo</button>
+          
+          <List />
+        </div>
+        )
+      }
     }
 
     class Goals extends React.Component {
@@ -248,7 +269,7 @@
       render() {
         return(
           <div>
-            <Todos />
+            <Todos store={store} />
             <Goals />
           </div>
         )
@@ -256,7 +277,7 @@
     }
 
     ReactDOM.render(
-      <App />,
+      <App store={store}/>,
       document.getElementById('app')
     )
 
