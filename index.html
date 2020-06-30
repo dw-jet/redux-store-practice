@@ -2,6 +2,7 @@
 <html>
   <head>
     <title>Udacity Todos Goals</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/redux/3.7.2/redux.min.js"></script>
   </head>
 </html>
 <body>
@@ -22,37 +23,6 @@
   <script>
     function generateId() {
       return Math.random().toString(36).substring(2) + (new Date()).getTime().toString(36)
-    }
-
-    // Library
-    function createStore(reducer) {
-      // The state
-      // Get the state
-      // Listen to changes
-      // Update the state
-
-      let state
-      let listeners = []
-
-      const getState = () => state
-
-      const subscribe = (listener) => {
-        listeners.push(listener)
-        return () => {
-          listeners = listeners.filter((l) => l !== listener) 
-        }
-      }
-
-      const dispatch = (action) => {
-        state = reducer(state, action)
-        listeners.forEach((listener) => listener())
-      }
-
-      return {
-        getState,
-        subscribe,
-        dispatch,
-      }
     }
 
     // App code
@@ -122,14 +92,10 @@
       }
     }
 
-    function app (state={}, action) {
-      return {
-        todos: todos(state.todos, action),
-        goals: goals(state.goals, action),
-      }
-    }
-
-    const store = createStore(app)
+    const store = Redux.createStore(Redux.combineReducers({
+      todos,
+      goals,
+    }))
 
     store.subscribe(() => {
       const { goals, todos } = store.getState()
