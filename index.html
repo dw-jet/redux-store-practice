@@ -176,14 +176,23 @@
       }
 
       removeItem = (todo) => {
+        // Use optimistic update to remove immediately
+        // and add it back if there is an error
+        this.props.store.dispatch(removeTodoAction(todo.id))
         return API.deleteTodo(todo.id)
-          .then(() => {
-            this.props.store.dispatch(removeTodoAction(todo.id))
+          .catch(() => {
+            this.props.store.dispatch(addTodoAction(todo))
+            alert('An error occurred trying to delete')
           })
       }
 
       toggleItem = (id) => {
         this.props.store.dispatch(toggleTodoAction(id))
+        API.saveTodoToggle(id)
+          .catch(() => {
+            this.props.store.dispatch(toggleTodoAction(id))
+            alert('There was an error toggling the item. Try again.')
+          })
       }
 
       render() {
@@ -223,6 +232,11 @@
 
       removeItem = (goal) => {
         this.props.store.dispatch(removeGoalAction(goal.id))
+        return API.deleteGoal(goal.id)
+          .catch(() => {
+            this.props.store.dispatch(addGoalAction(goal))
+            alert('There was an error deleting the goal.')
+          })
       }
 
       render() {
